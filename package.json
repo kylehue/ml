@@ -1,0 +1,32 @@
+{
+   "name": "random-forest",
+   "private": true,
+   "version": "0.0.0",
+   "type": "module",
+   "scripts": {
+      "dev": "vite",
+      "build": "tsc && vite build && npm run build:modules",
+      "build:modules": "vite build --mode modules",
+      "preview": "vite preview"
+   },
+   "devDependencies": {
+      "@types/node": "^24.9.1",
+      "glob": "^10.4.5",
+      "typescript": "^5.2.2",
+      "vite": "^5.3.4",
+      "vite-plugin-dts": "^4.5.4"
+   },
+   "main": "./dist/cjs/index.js",
+   "module": "./dist/esm/index.js",
+   "types": "./dist/types/index.d.ts",
+   "exports": {
+      ".": {
+         "import": "./dist/esm/index.js",
+         "require": "./dist/cjs/index.js",
+         "types": "./dist/types/index.d.ts"
+      }
+   },
+   "files": [
+      "dist"
+   ]
+}
