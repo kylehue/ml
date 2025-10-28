@@ -18,6 +18,7 @@ export class RandomForestClassifier {
    }
 
    fit(features: any[][], labels: any[]) {
+      this._trees = [];
       for (let i = 0; i < this._options.nEstimators; i++) {
          // bootstrap sampling
          let bootstrapFeatures: any[][] = [];
