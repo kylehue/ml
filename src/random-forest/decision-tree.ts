@@ -1,5 +1,6 @@
 import { DataPoint } from "../types";
 import { createFrequencyMap, shuffle } from "../utils/array";
+import { matches, gini } from "./utils";
 
 export interface DecisionTreeOptions {
    maxDepth?: number;
@@ -154,26 +155,4 @@ export class DecisionTree {
       this.questionIndex = bestQuestionIndex;
       this.questionValue = bestQuestionValue;
    }
-}
-
-// check if feature matches a question
-function matches(question: DataPoint, feature: DataPoint) {
-   if (typeof question === "number" && typeof feature === "number") {
-      return feature <= question;
-   } else {
-      return feature == question;
-   }
-}
-
-// 1 - sum(p(i)^2)
-function gini(labels: DataPoint[]) {
-   let countMap = createFrequencyMap(labels);
-
-   let impurity = 1;
-   for (let [_, count] of countMap) {
-      let prob = count / labels.length;
-      impurity -= prob * prob;
-   }
-
-   return impurity;
 }
