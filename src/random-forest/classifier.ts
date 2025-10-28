@@ -1,3 +1,4 @@
+import { DataPoint } from "../types";
 import { DecisionTree } from "./decision-tree";
 
 export interface RandomForestClassifierOptions {
@@ -17,12 +18,12 @@ export class RandomForestClassifier {
       this._options = { ...this._options, ...options };
    }
 
-   fit(features: any[][], labels: any[]) {
+   fit(features: DataPoint[][], labels: DataPoint[]) {
       this._trees = [];
       for (let i = 0; i < this._options.nEstimators; i++) {
          // bootstrap sampling
-         let bootstrapFeatures: any[][] = [];
-         let bootstrapLabels: any[] = [];
+         let bootstrapFeatures: DataPoint[][] = [];
+         let bootstrapLabels: DataPoint[] = [];
          for (let j = 0; j < features.length; j++) {
             let index = Math.floor(Math.random() * features.length);
             bootstrapFeatures.push(features[index]);
@@ -41,20 +42,26 @@ export class RandomForestClassifier {
       }
    }
 
-   predict(features: any[]) {
-      let votes: Map<any, number> = new Map();
+   predict(features: DataPoint[]) {
+      let votes: Map<DataPoint, number> = new Map();
       for (let tree of this._trees) {
          let prediction = tree.predict(features);
          votes.set(prediction.label, (votes.get(prediction.label) ?? 0) + 1);
       }
 
-      let bestLabel = null;
+      let bestLabel: DataPoint | null = null;
       let bestCount = -1;
       for (let [label, count] of votes) {
          if (count > bestCount) {
             bestCount = count;
             bestLabel = label;
          }
+      }
+
+      if (bestLabel === null) {
+         throw new Error(
+            "Failed to make prediction. Make sure the model has data trained."
+         );
       }
 
       return {

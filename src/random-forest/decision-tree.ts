@@ -1,3 +1,4 @@
+import { DataPoint } from "../types";
 import { createFrequencyMap, shuffle } from "../utils/array";
 
 export interface DecisionTreeOptions {
@@ -7,12 +8,12 @@ export interface DecisionTreeOptions {
 }
 
 export class DecisionTree {
-   public features: any[][] = [];
-   public labels: any[] = [];
+   public features: DataPoint[][] = [];
+   public labels: DataPoint[] = [];
    public left: DecisionTree | null = null;
    public right: DecisionTree | null = null;
    public questionIndex: number | null = null;
-   public questionValue: any | null = null;
+   public questionValue: DataPoint | null = null;
    private _options: Required<DecisionTreeOptions> = {
       maxDepth: 10,
       minSamplesSplit: 2,
@@ -24,7 +25,7 @@ export class DecisionTree {
       this._options = { ...this._options, ...options };
    }
 
-   predict(feature: any[]): { label: any; confidence: number } {
+   predict(feature: DataPoint[]): { label: DataPoint; confidence: number } {
       if (this.left === null && this.right === null) {
          // return the most common label
          let countMap = createFrequencyMap(this.labels);
@@ -55,7 +56,7 @@ export class DecisionTree {
       }
    }
 
-   fit(features: any[][], labels: any[]) {
+   fit(features: DataPoint[][], labels: DataPoint[]) {
       this.features = features;
       this.labels = labels;
       let nodes: DecisionTree[] = [this];
@@ -74,11 +75,11 @@ export class DecisionTree {
 
       let bestGini = gini(this.labels);
       let bestQuestionIndex = -1;
-      let bestQuestionValue = null;
-      let bestLeftFeatures: any[] = [];
-      let bestLeftLabels: any[] = [];
-      let bestRightFeatures: any[] = [];
-      let bestRightLabels: any[] = [];
+      let bestQuestionValue: DataPoint | null = null;
+      let bestLeftFeatures: DataPoint[][] = [];
+      let bestLeftLabels: DataPoint[] = [];
+      let bestRightFeatures: DataPoint[][] = [];
+      let bestRightLabels: DataPoint[] = [];
 
       // feature bagging
       let allFeatureIndices = shuffle([
@@ -90,7 +91,7 @@ export class DecisionTree {
       );
 
       // get all possible questions
-      let questions = new Array(this.features[0].length)
+      let questions: Array<Set<DataPoint>> = new Array(this.features[0].length)
          .fill(0)
          .map(() => new Set());
       for (let i = 0; i < this.features.length; i++) {
@@ -156,8 +157,8 @@ export class DecisionTree {
 }
 
 // check if feature matches a question
-function matches(question: any, feature: any) {
-   if (typeof question === "number") {
+function matches(question: DataPoint, feature: DataPoint) {
+   if (typeof question === "number" && typeof feature === "number") {
       return feature <= question;
    } else {
       return feature == question;
@@ -165,7 +166,7 @@ function matches(question: any, feature: any) {
 }
 
 // 1 - sum(p(i)^2)
-function gini(labels: any[]) {
+function gini(labels: DataPoint[]) {
    let countMap = createFrequencyMap(labels);
 
    let impurity = 1;
