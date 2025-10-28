@@ -1,2 +1,2 @@
-export * from "./random-forest-classifier";
-export * from "./decision-tree";
+export * from "./random-forest/classifier";
+export * from "./random-forest/decision-tree";

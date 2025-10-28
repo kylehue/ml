@@ -1,4 +1,4 @@
-import { createFrequencyMap, shuffle } from "./utils/array";
+import { createFrequencyMap, shuffle } from "../utils/array";
 
 export interface DecisionTreeOptions {
    maxDepth?: number;
